@@ -11,7 +11,7 @@ for i=1:length(a)
         value(4)=value(4)+1;
     end
 end
-ave_a = sum(a)/length(a);
+ave_a = sum(abs(a))/length(a);
 percentage=[value(1)/sum(value),value(2)/sum(value),value(3)/sum(value),value(4)/sum(value)];
 %disp(percentage);
 end

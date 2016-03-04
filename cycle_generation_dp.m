@@ -20,7 +20,7 @@ function sequence = cycle_generation_dp(num_microtrip,criteria)
     
     sequence = [];
     j = 0;
-    error = 0;
+    error = [];
     ave_v = 0;
     ave_a = 0;
     ave_p1 = 0;
@@ -38,7 +38,7 @@ function sequence = cycle_generation_dp(num_microtrip,criteria)
     ave_p4_arr = zeros(1,num_microtrip);
     
     loop = 1;
-    while loop <= 10
+    while loop <= 20
         j = j + 1;
         for i = 1:num_microtrip
             ave_v_arr(i)  = (ave_v * sum_t + microtrip(i,1) * microtrip(i,7))/(sum_t + microtrip(i,7));
@@ -47,13 +47,17 @@ function sequence = cycle_generation_dp(num_microtrip,criteria)
             ave_p2_arr(i) = (ave_p2 * sum_t + microtrip(i,4) * microtrip(i,7))/(sum_t + microtrip(i,7));
             ave_p3_arr(i) = (ave_p3 * sum_t + microtrip(i,5) * microtrip(i,7))/(sum_t + microtrip(i,7));
             ave_p4_arr(i) = (ave_p4 * sum_t + microtrip(i,6) * microtrip(i,7))/(sum_t + microtrip(i,7));
+            %error_arr(i)  = ((ave_v_arr(i)-criteria(1))/criteria(1))^2 + ((ave_a_arr(i)-criteria(2))/criteria(2))^2 ...
+            %               +((ave_p1_arr(i)-criteria(3))/criteria(3))^2 + ((ave_p2_arr(i)-criteria(4))/criteria(4))^2 ...
+            %               +((ave_p3_arr(i)-criteria(5))/criteria(5))^2 + ((ave_p4_arr(i)-criteria(6))/criteria(6))^2;
+            
             error_arr(i)  = ((ave_v_arr(i)-criteria(1))/criteria(1))^2 + ((ave_a_arr(i)-criteria(2))/criteria(2))^2 ...
                            +((ave_p1_arr(i)-criteria(3))/criteria(3))^2 + ((ave_p2_arr(i)-criteria(4))/criteria(4))^2 ...
                            +((ave_p3_arr(i)-criteria(5))/criteria(5))^2 + ((ave_p4_arr(i)-criteria(6))/criteria(6))^2;
         end
-        error = min(error_arr);
-        disp(error);
-        sequence(j) = find(error_arr == error,1);
+        error(loop) = min(error_arr);
+        disp(error(loop));
+        sequence(j) = find(error_arr == error(loop),1);
         disp(sequence(j));
             
         ave_v = (ave_v * sum_t + microtrip(sequence(j),1) * microtrip(sequence(j),7))/(sum_t + microtrip(sequence(j),7));
@@ -64,7 +68,7 @@ function sequence = cycle_generation_dp(num_microtrip,criteria)
         ave_p4 = (ave_p4 * sum_t + microtrip(sequence(j),6) * microtrip(sequence(j),7))/(sum_t + microtrip(sequence(j),7));
         sum_t = sum_t + microtrip(sequence(j),7);
             
-        if error <= 1
+        if error(loop) <= 0.1
             disp('Found');
             disp(ave_v);
             disp(ave_a);
@@ -88,5 +92,9 @@ function sequence = cycle_generation_dp(num_microtrip,criteria)
     end
     %disp(full_cycle);
     %disp(full_cycle_time);
+    figure(1)
     plot(full_cycle_time, full_cycle);
+    figure(2)
+    plot(error);
+    
 end
